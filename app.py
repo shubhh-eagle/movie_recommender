@@ -1,4 +1,5 @@
 import pickle
+import pandas as pd
 import streamlit as st
 
 #for hashing password 
@@ -6,6 +7,19 @@ import hashlib
 
 #import database management functions
 from manage_db import *
+
+html_temp = '''
+    
+    ## To Get Started
+
+    #### 1. Click on the arrow on the top left corner
+
+    #### 2. Click on drop-down menu
+
+    #### 3. If you are new user, then click on Sign-Up Option
+
+    #### 4. If you are existing user, then click on Login Option
+'''
 
 # Generating hash for password
 def generate_hashes(password):
@@ -39,13 +53,15 @@ def recommend(query_movie):
 
 st.title("Movie Recommender App")
 
-menu = ['Home' , 'Login' , 'Signup']
+menu = ['Home' , 'Login' , 'Sign-Up']
 
 choice = st.sidebar.selectbox("Menu",menu)
 
 if choice == "Login":
     username = st.sidebar.text_input("Username")
     password = st.sidebar.text_input("Password",type='password')
+
+    #using checbox instead of button lets us stay login while doing performing other functions
     if st.sidebar.checkbox("Login"):
         create_usertable()
         hashed_pswd = generate_hashes(password)
@@ -53,33 +69,31 @@ if choice == "Login":
         if result:
             st.success("Welcome {}".format(username))
 
-            st.subheader('Movie Recommender System')
             movie_list=movie_pivot.index.tolist()
             query_movie = st.selectbox('Type or Select a Movie from the dropdown',movie_list)
         
             if st.button('Show Recommendation'):
                 recommended_movie_names = recommend(query_movie)
-                col1, col2, col3, col4, col5 = st.columns(5)
-                with col1:
-                    st.text(recommended_movie_names[0])
-                with col2:
-                    st.text(recommended_movie_names[1])
-                with col3:
-                    st.text(recommended_movie_names[2])
-                with col4:
-                    st.text(recommended_movie_names[3])
-                with col5:
-                    st.text(recommended_movie_names[4])
 
+                df = pd.DataFrame(recommended_movie_names, index = [1,2,3,4,5],columns = ['Movie Names'])
+                with st.expander("List of Recommended Movies",expanded = True):
+                    st.dataframe(df)
+               
+
+        else:
+            st.warning("Incorrect Username/Password")
     else:
-        st.warning("Incorrect Username/Password")
+        st.info("Enter Username and Password")
+        st.info("Click on the checkbox to Login")
 
-elif choice == "SignUp":
+elif choice == "Sign-Up":
     new_username = st.text_input("User name")
     new_password = st.text_input("Password", type='password')
 
     confirm_password = st.text_input("Confirm Password",type='password')
-    if new_password == confirm_password:
+    if new_password == "" or confirm_password == "":
+        pass
+    elif new_password == confirm_password and new_password != "" and confirm_password != "":
         st.success("Password Confirmed")
     else:
         st.warning("Passwords not the same")
@@ -91,7 +105,7 @@ elif choice == "SignUp":
         st.success("You have successfully created a new account")
         st.info("Login to Get Started")
 
-else:
-    st.subheader("Home")
+elif choice == "Home":
+    st.markdown(html_temp, unsafe_allow_html=True)
 
 
