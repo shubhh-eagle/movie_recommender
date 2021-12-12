@@ -3,8 +3,8 @@
 import pandas as pd
 import pickle
 
-movie_path = 'C:/Users/Dell/Downloads/project_1/movies.csv'
-rating_path = 'C:/Users/Dell/Downloads/project_1/ratings.csv'
+movie_path = 'C:/Users/Dell/movie recom/movies.csv'
+rating_path = 'C:/Users/Dell/movie recom/ratings.csv'
 
 movies_df = pd.read_csv(movie_path,usecols=['movieId','title'],dtype={'movieId': 'int32', 'title': 'str'})
 rating_df=pd.read_csv(rating_path,usecols=['userId', 'movieId', 'rating'],dtype={'userId': 'int32', 'movieId': 'int32', 'rating': 'float32'})
@@ -66,6 +66,6 @@ for i in range(0, len(distances.flatten())):
 
 
 
-pickle.dump(rating_popular_movie,open('C:/Users/Dell/Downloads/project_1/final_rating.pkl','wb'))
+pickle.dump(rating_popular_movie,open('C:/Users/Dell/movie recom/final_rating.pkl','wb'))
 
-pickle.dump(model_knn,open('C:/Users/Dell/Downloads/project_1/model.pkl','wb'))
+pickle.dump(model_knn,open('C:/Users/Dell/movie recom/model.pkl','wb'))
